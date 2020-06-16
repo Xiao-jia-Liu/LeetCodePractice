@@ -56,3 +56,26 @@ class Solution {
 ```
 
 时间复杂度O(n),空间复杂度O(n)
+
+```C++
+//C++
+    class SolutionByHash {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int, int> temp;
+        for (int i = 0; i < nums.size(); i++)
+        {
+            if (temp.find(target - nums[i]) != temp.end())//查找哈希表中是否存在符合的
+            {
+            return { temp[target - nums[i]],i };  //如果有返回下标
+            }
+            else {
+                temp[nums[i]] = i;  // key为数组元素 ，value为数组下标i
+            }
+        }
+        return {}; //不存在 返回空
+    }
+};
+```
+
+时间复杂度O(n),空间复杂度O(n)
