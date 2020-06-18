@@ -160,26 +160,70 @@ class Codec() {
 
     // Decodes your encoded data to tree.
     fun deserialize(data: String): TreeNode? {
-        println(data)
         return deserialize(StringBuilder(data))
     }
 
     fun deserialize(data: StringBuilder): TreeNode? {
         var c = getNextToken(data)
 
-        var stack = Stack<TreeNode?>()
+        if (c == "" || c == "*") {
+            return null
+        }
+
+        var root = TreeNode(c.toInt())
+
+        var stack = Stack<Node?>()
+        stack.push(Node(root,1))
+        c = getNextToken(data)
+
         while (c != "") {
-            var currentNode: TreeNode = null
-            if (c == "*") {
-                
+            var currentNode: TreeNode? = null
+            var lastNode: Node? = null
+
+            if (!stack.isEmpty()) {
+                lastNode = stack.pop()
             }
+
+            if (c == "*") {
+                if (lastNode != null) {
+                    if (lastNode.lr == 1) {
+                        lastNode.lr = 2
+                        stack.push(lastNode)
+                    } else {
+                        while (!stack.isEmpty()) {
+                            var parentNode = stack.pop()
+                            if (parentNode?.lr == 1) {
+                                parentNode?.lr = 2
+                                stack.push(parentNode)
+                                break
+                            }
+                        }
+                    }
+                }
+            } else {
+                currentNode = TreeNode(c.toInt())
+
+                if (lastNode != null) {
+                    if (lastNode.lr == 1) {
+                        lastNode.node.left = currentNode
+                    } else {
+                        lastNode.node.right = currentNode
+                    }
+
+                    stack.push(lastNode)
+                }
+
+                stack.push(Node(currentNode,1))
+            }
+
+            c = getNextToken(data)
         }
 
         /*if (c == "*" || c == "") {
             return null
         }
 
-        
+
 
         var root = TreeNode(c.toInt())
         root.left = deserialize(data)
@@ -187,6 +231,10 @@ class Codec() {
 
         //printRoot(root)
         return root
+    }
+
+    data class Node(val node: TreeNode,var lr: Int) {
+
     }
 
     fun printRoot(root: TreeNode?) {
@@ -200,18 +248,29 @@ class Codec() {
     }
 
     fun getNextToken(data: StringBuilder): String {
-        while(data.length > 0 && data[0] == '_') {
-            data.delete(0,1)
-        }
-
         if (data.length == 0) {
             return ""
         }
 
-        var tems = data.split("_")
-        var ret = tems[0]
-        data.delete(0,(ret.length + 1))
-        return ret
+        while (data[0] == '_') {
+            data.delete(0,1)
+
+            if (data.length == 0) {
+                return ""
+            }
+        }
+
+        var index = 0
+        var ret = StringBuilder()
+
+        while (index < data.length && data[index] != '_') {
+            ret.append(data[index])
+            index++
+        }
+
+        data.delete(0,index)
+
+        return ret.toString()
     }
 }
 
