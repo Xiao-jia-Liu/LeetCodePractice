@@ -6,7 +6,7 @@
 
 现在考虑网格中有障碍物。那么从左上角到右下角将会有多少条不同的路径？
 
-![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/10/22/robot_maze.png)
+![img](https://assets.leetcode-cn.com/aliyun-lc-upload/uploads/2018/10/22/robot_maze.png)-+
 
 网格中的障碍物和空位置分别用 `1` 和 `0` 来表示。
 
@@ -131,4 +131,60 @@ O(2 ^ n ),肯定爆炸
 
 ##### 动态规划
 
-后续补充，都0:38了
+设
+$$
+f[i][j]
+$$
+表示第 i 行 第 j 列的不同路径，那显然可得，当数组大小为1时，且元素为0时，f\[size - 1][size - 1]就是 1，那什么时候 + 1呢？当然就是在某个点，既能向上，也能向左时，就 +1，比如，在size - 1,size - 1这个点，既能向上，也能向左，那就表示，有两条不同的路径能到达这儿，那就是f\[size - 1][size - 2],f\[size - 2][size - 1]都为2。最后就是转化为求f\[0][0]的值。所以有递推公式
+$$
+f[i][j] = 	\left\{ \begin{array}{rcl}
+f[i + 1][j] + f[i][j + 1] & \mbox{while} & obstacleGrid[i + 1][j] == 0 \&\&obstacleGrid[i][j + 1] == 0 \\
+f[i + 1][j] & \mbox{while} & obstacleGrid[i + 1][j]==0 \\
+f[i][j + 1] & \mbox{while} & obstacleGrid[i][j + i] == 0
+ \end{array}\right.
+$$
+
+
+
+
+```kotlin
+class Solution {
+    fun uniquePathsWithObstacles(obstacleGrid: Array<IntArray>): Int {
+        if (obstacleGrid.isEmpty()) {
+            return 0
+        }
+
+        if (obstacleGrid[0].isEmpty()) {
+            return 1
+        }
+
+        if (obstacleGrid[0][0] == 1) {
+            return 0
+        }
+
+        val xSize = obstacleGrid.size
+        val ySize = obstacleGrid[0].size
+        val sup = Array(obstacleGrid.size) { Array<Int>(obstacleGrid[0].size) { 0 } }
+        sup[xSize - 1][ySize - 1] = if (obstacleGrid[xSize - 1][ySize - 1] == 0) 1 else 0
+
+        for (i in xSize - 1 downTo 0) {
+            for (j in ySize - 1 downTo 0) {
+                if (i == xSize - 1 && j == ySize - 1) {
+                    continue
+                }
+
+                when {
+                    i < xSize - 1 && j < ySize - 1 && obstacleGrid[i + 1][j] == 0 && obstacleGrid[i][j + 1] == 0  -> sup[i][j] = sup[i][j + 1] + sup[i + 1][j]
+                    i < xSize - 1 &&  obstacleGrid[i + 1][j] == 0 -> sup[i][j] = sup[i + 1][j]
+                    j < ySize - 1 && obstacleGrid[i][j + 1] == 0 -> sup[i][j] = sup[i][j + 1]
+                    else -> sup[i][j] = 0
+                }
+            }
+        }
+
+        return sup[0][0]
+    }
+}
+```
+
+尼玛，终于搞定了，好几个边界条件，简直尼玛坑爹
