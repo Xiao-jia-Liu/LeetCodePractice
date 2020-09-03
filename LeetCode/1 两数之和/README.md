@@ -23,7 +23,15 @@
 
 两重循环，每个数字和第二重循环中的每个数字进行配对，计算和，和为targe则返回将数字下标返回，时间复杂度O（n2）
 
-
+python版本
+```python
+class Solution(object):
+    def twoSum(self, nums, target):
+        for i in range(0,len(nums)):
+            for j in range(i+1,len(nums)):
+                if nums[i]+nums[j]==target:
+                    return [i,j]
+```
 
 ##### 解法：
 
