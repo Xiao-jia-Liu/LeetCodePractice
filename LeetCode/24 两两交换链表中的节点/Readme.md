@@ -5,7 +5,6 @@
 你不能只是单纯的改变节点内部的值，而是需要实际的进行节点交换。
 
  
- 
 
 **示例**
 
@@ -59,4 +58,58 @@ class Solution(object):
 
 
 
+
+kotlin代码
+
+```kotlin
+/**
+ * Example:
+ * var li = ListNode(5)
+ * var v = li.`val`
+ * Definition for singly-linked list.
+ * class ListNode(var `val`: Int) {
+ *     var next: ListNode? = null
+ * }
+ */
+class Solution {
+    fun swapPairs(head: ListNode?): ListNode? {
+        if (head == null || head.next == null) {
+            return head
+        }
+        
+        var first: ListNode? = head
+        var second: ListNode? = head.next
+        var swap: ListNode? = head.next.next
+        var last: ListNode? = null
+        var res: ListNode? = null
+        
+        while (true) {
+            if (last != null) {
+                last.next = second
+            }
+
+            last = first
+            second?.next = first
+            first?.next = swap
+            first = swap
+
+            if (res == null) {
+                res = second
+            }
+            
+            if (first == null || first?.next == null) {
+                break
+            }
+            
+            second = first?.next
+            swap = second?.next
+        }
+        
+        
+        return res
+    }
+}
+
+
+```
 
