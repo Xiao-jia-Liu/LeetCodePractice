@@ -25,8 +25,34 @@
 
 递归算法很简单，先访问左子树，访问当前节点，访问右子树
 
+python版本
+```python
+class Solution(object):
+    def inorderTraversal(self, root):
 
+        result = []
+        
+        def inorder(root):
+            if root == None:
+                return 0
+            if root.left != None and root.right != None:
+                inorder(root.left)
+                result.append(root.val)
+                inorder(root.right)
+            if root.left == None and root.right != None:
+                result.append(root.val)
+                inorder(root.right)
+            if root.left != None and root.right == None:
+                inorder(root.left)
+                result.append(root.val)
+            if root.left == None and root.right == None:
+                result.append(root.val)
+            return 0
+        inorder(root)
+        return result
+```
 
+kotlin版本
 ```kotlin
 /**
  * Example:
