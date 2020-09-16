@@ -24,163 +24,95 @@
 - 你可以假设给定的数独只有唯一解。
 - 给定数独永远是 `9x9` 形式的。
 
-##### 初步解法
+##### 递归
 
-每个格子里，本质就是一个行列和本大格的与集合，然后在总的1-9的集合的差集。
+很简单的递归就是，填完一个格子后，任然是一个数独，所以，只需要递归填完所有的格子就ok，一开始先找出需要填的格子的集合，然后作为参数传入递归函数，然后，对每个格子都从1 - 9填写，判断是否符合规则，规则就是横、竖、小格子里都不能出现重复的，直到最后需要填写的格子数为0则表示填写完毕
+
+
 
 ```kotlin
 class Solution {
-    val allNodes = HashMap<Int,Node>()
-    val allNumber = HashSet<Char>()
-
     fun solveSudoku(board: Array<CharArray>): Unit {
-        for (item in board) {
-                for (i in item) {
-                    if (i != '.') {
-                        allNumber.add(i)
-                    }
-                }
-            }
+            val need = ArrayList<Int>()
 
-            for (i in board.indices) {
-                for (j in board[i].indices) {
+            for (i in 0 .. 8) {
+                for (j in 0 .. 8) {
                     if (board[i][j] == '.') {
-                        allNodes[i * 10 + j] = getNodeInfo(board,i,j,allNumber)
+                        need.add(i * 10 + j)
                     }
                 }
             }
 
-            sudoku(board,allNodes,allNumber)
+            val temB = Array<CharArray>(9){CharArray(9){'.'}}
+
+            for (i in 0 .. 8) {
+                for (j in 0 .. 8) {
+                    temB[i][j] = board[i][j]
+                }
+            }
+
+            dfs(temB,need,board)
     }
 
-    fun getNodeInfo(board: Array<CharArray>,i: Int,j: Int,allNumber: HashSet<Char>): Node {
-        val temCol = HashSet<Char>()
-        val temRow = HashSet<Char>()
-        val temInner = HashSet<Char>()
+    fun dfs(board: Array<CharArray>,need: ArrayList<Int>,res: Array<CharArray>) {
+        if (need.size == 0) {
 
-        //col
+            for (i in 0 ..8) {
+                for (j in 0 .. 8) {
+                    res[i][j] = board[i][j]
+                }
+            }
+            return
+        }
+
+        for (number in 1 .. 9) {
+            val tem = need.first()
+
+            val i = tem / 10
+            val j = tem % 10
+
+            if (accept(board,i,j,number.toString()[0])) {
+                need.removeAt(0)
+                board[i][j] = number.toString()[0]
+                dfs(board,need,res)
+                board[i][j] = '.'
+                need.add(0,tem)
+            }
+
+
+        }
+
+    }
+
+    fun accept(board: Array<CharArray>,i: Int,j: Int,number: Char): Boolean {
         for (temI in 0 .. 8) {
-            temCol.add(board[temI][j])
+            if (board[temI][j] == number) {
+                return false
+            }
         }
 
-        //row
         for (temJ in 0 .. 8) {
-            temRow.add(board[i][temJ])
+            if (board[i][temJ] == number) {
+                return false
+            }
         }
 
-        //inner
+
         val r = i / 3
         val c = j / 3
 
-        for (temI in r * 3 until r * 3 + 3) {
-            for (temJ in c * 3 until c * 3 + 3) {
-                temInner.add(board[temI][temJ])
-            }
-        }
-
-        /*val row = HashSet(allNumber)
-        val col = HashSet(allNumber)
-        val inner = HashSet(allNumber)
-    */
-    /*    row.removeAll(temRow)
-        col.removeAll(temCol)
-        inner.removeAll(temInner)*/
-
-        return Node(temRow,temCol,temInner)
-    }
-
-        fun sudoku(board: Array<CharArray>, allNode: HashMap<Int,Node>, allNumber:HashSet<Char>) {
-        var remainNode = allNode.size
-
-
-        while (remainNode != 0) {
-            for ((key, value) in allNode) {
-                if (value.accept.size == 1) {
-                    val i = key / 10
-                    val j = key % 10
-
-                    board[i][j] = value.accept.first()
-
-                    //row update
-                    for (temJ in 0 .. 8) {
-                        if (temJ == j) {
-                            continue
-                        }
-
-                        val n = allNode[i * 10 + temJ]
-
-                        if (value.accept.isEmpty()) {
-                            n?.updateAccept()
-                            break
-                        }
-
-                        n?.row?.add(value.accept.first())
-                        n?.updateAccept()
-                    }
-
-                    //col update
-                    for (temI in 0 .. 8) {
-                        if (temI == i) {
-                            continue
-                        }
-
-                        val n = allNode[temI * 10 + j]
-
-                        if (value.accept.isEmpty()) {
-                            n?.updateAccept()
-                            break
-                        }
-
-                        n?.col?.add(value.accept.first())
-                        n?.updateAccept()
-                    }
-
-                    //inner update
-                    val remainI = i / 3
-                    val remainJ = j / 3
-
-                    for (temI in remainI * 3 until remainI * 3 + 3) {
-                        for (temJ in remainJ * 3 until remainJ * 3 + 3) {
-                            if (temI == i && temJ == j) {
-                                continue
-                            }
-
-                            val n = allNode[temI * 10 + temJ]
-
-                            if (value.accept.isEmpty()) {
-                                n?.updateAccept()
-                                break
-                            }
-
-                            n?.inner?.add(value.accept.first())
-                            n?.updateAccept()
-                        }
-                    }
-
-                    //remove the current node
-                    value.accept.clear()
-                    remainNode--
+        for (temI in r * 3 .. r * 3 + 2) {
+            for (temJ in c * 3 .. c * 3 + 2) {
+                if (board[temI][temJ] == number) {
+                    return false
                 }
             }
         }
 
-
+        return true
     }
 
-    inner class Node(val row: HashSet<Char>,val col: HashSet<Char>,val inner: HashSet<Char>) {
-        var accept: HashSet<Char> = HashSet(allNumber)
-
-        init {
-            updateAccept()
-        }
-
-        fun updateAccept() {
-            accept.removeAll(row)
-            accept.removeAll(col)
-            accept.removeAll(inner)
-        }
-    }
 }
 ```
 
-但是存在问题，如果说每个都不满足能唯一确定一个数，则会一直循环，无法退出
+优化方法后面再说
