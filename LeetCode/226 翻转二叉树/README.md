@@ -33,8 +33,6 @@
 
 ##### 题解
 
-比较简单，直接转为char数组，首尾交换元素即可
-
 ```python
 class Solution(object):
     def invertTree(self, root):
