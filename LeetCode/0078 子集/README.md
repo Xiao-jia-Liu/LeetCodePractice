@@ -48,3 +48,41 @@ class Solution(object):
         return end_list
 ```
 
+
+
+kotlin版本
+
+```kotlin
+class Solution {
+    val res = ArrayList<ArrayList<Int>>()
+    val path = ArrayList<Int>()
+
+    fun subsets(nums: IntArray): List<List<Int>> {
+        val used = BooleanArray(nums.size) {false}
+        recursion(nums, 0, used)
+        res.add(ArrayList<Int>())
+
+        return res
+    }
+
+    fun recursion(nums: IntArray,start: Int,used: BooleanArray) {
+        if (start != 0) {
+            res.add(ArrayList<Int>(path))
+        }
+
+        for (i in start until nums.size) {
+            if (used[i]) {
+                continue
+            }
+
+            used[i] = true
+            path.add(nums[i])
+            recursion(nums, i + 1, used)
+            path.removeAt(path.lastIndex)
+            used[i] = false
+        }
+    }
+}
+
+```
+
