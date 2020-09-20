@@ -22,6 +22,30 @@
 
 递归遍历树，在是左子树且是叶子节点时就加和
 
+```python
+import numpy as np
+class Solution(object):
+    def sumOfLeftLeaves(self, root):
+        result = []
+        def inorder(root):
+            if root == None:
+                return 0
+            if root.left != None and root.right != None:
+                inorder(root.left)
+                if root.left.left==None and root.left.right==None:
+                    result.append(root.left.val)
+                inorder(root.right)
+            if root.left == None and root.right != None:
+                inorder(root.right)
+            if root.left != None and root.right == None:
+                inorder(root.left)
+                if root.left.left==None and root.left.right==None:
+                    result.append(root.left.val)
+            return 0
+
+        inorder(root)
+        return int(np.array(result).sum())
+```
 
 
 ```kotlin
