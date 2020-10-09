@@ -77,3 +77,40 @@ public class Solution {
 ```
 
 
+
+kotlin版本：
+
+```kotlin
+/**
+ * Example:
+ * var li = ListNode(5)
+ * var v = li.`val`
+ * Definition for singly-linked list.
+ * class ListNode(var `val`: Int) {
+ *     var next: ListNode? = null
+ * }
+ */
+
+class Solution {
+    fun hasCycle(head: ListNode?): Boolean {
+        if (head == null) {
+            return false
+        }
+
+        var next = head?.next
+        var nnext = next?.next
+    
+        while (next != null && nnext != null) {
+            if (next == nnext) {
+                return true
+            }
+
+            next = next?.next
+            nnext = nnext?.next?.next
+        }
+
+        return false
+    }
+}
+```
+
