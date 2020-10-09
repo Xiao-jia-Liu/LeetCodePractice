@@ -61,6 +61,50 @@ class Solution(object):
 
 
 
+利用两个指针，一个指向m的尾部，一个指向n的尾部，每次都选择m和n的大的一个，同时，再用一个index指针，从往前填充nums1数组，空间复杂度 O(1),时间复杂度 O(m+n)
+
+
+
+```kotlin
+class Solution {
+    fun merge(nums1: IntArray, m: Int, nums2: IntArray, n: Int): Unit {
+        var index = m + n - 1
+        var m = m - 1
+        var n = n - 1
+
+        while (m >= 0 && n >= 0) {
+            if (nums1[m] >= nums2[n]) {
+                nums1[index] = nums1[m]
+                m = m -1
+                index = index - 1
+            } else {
+                nums1[index] = nums2[n]
+                n = n -1
+                index = index - 1
+            }
+        }
+
+        if (m >= 0) {
+            while (m >= 0) {
+                nums1[index] = nums1[m]
+                m = m -1
+                index = index - 1
+            }
+        }
+
+        if (n >= 0) {
+            while (n >= 0) {
+                nums1[index] = nums2[n]
+                n = n -1
+                index = index - 1
+            }
+        }
+    }
+}
+```
+
+
+
 
 
 
