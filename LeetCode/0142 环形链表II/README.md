@@ -46,3 +46,60 @@ class Solution(object):
 ```
 
 复杂度 时间复杂度O(n) 空间复杂度O(n)
+
+##### 快慢指针
+
+利用一个快指针fast，一个慢指针slow，快指针每次都向前移动两个位置，慢指针移动一个位置，如果有环的话，肯定会在某个位置相遇。假设相遇点为n，设从头到n有a个节点，从n到相遇的位置有b个节点，从相遇位置继续向前到n有c个节点。则有关系式
+$$
+a + n(b + c) + b = 2(a + b)
+$$
+因为，可能快指针已经走了n圈，所以有个n(b+c),且相遇时，会额外有一段c，还有开头的a，而满指针就只有a和b，所以；
+$$
+a = (n - 1)(b + c) + c
+$$
+这个就表示，从开头走到n的位置的距离正好等于从相遇的位置走n - 1圈且 + c到n，所以，可以在用一个p指针，当fast和slow相遇时，p往前走，slow往前走，当两个相遇时，就是环的开始点
+
+```kotlin
+/**
+ * Example:
+ * var li = ListNode(5)
+ * var v = li.`val`
+ * Definition for singly-linked list.
+ * class ListNode(var `val`: Int) {
+ *     var next: ListNode? = null
+ * }
+ */
+
+class Solution {
+    fun detectCycle(head: ListNode?): ListNode? {
+        if (head == null) {
+            return null
+        }
+
+        var slow = head?.next
+        var fast = head?.next?.next
+
+        while (slow != null && fast != null) {
+            if (slow == fast) {
+                var p = head
+
+                while (p != null && slow != null) {
+                    if (p == slow) {
+                        return p
+                    }
+
+                    p = p?.next
+                    slow = slow?.next
+                } 
+
+            }
+
+            slow = slow?.next
+            fast = fast?.next?.next
+        }
+
+        return null
+    }
+}
+```
+
