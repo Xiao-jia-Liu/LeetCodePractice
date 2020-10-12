@@ -37,6 +37,35 @@
 
 二叉搜索树中序遍历是一个有序的升序数组，而且，最小值之差一定出现在两个相邻的元素间，所以，只需要中序遍历，然后取中序遍历时的两元素的最小差值就行
 
+
+```python
+class Solution(object):
+    def getMinimumDifference(self, root):
+        result = []
+        def inorder(root):
+            if root == None:
+                return 0
+            inorder(root.left)
+            result.append(root.val)
+            inorder(root.right)
+            return 0
+        inorder(root)
+
+        temp = 100000000000000
+        for i in range(len(result)-1):
+            diff = abs(result[i]-result[i+1])
+            if diff < temp:
+                temp = diff
+        return temp
+```
+
+
+
+
+
+
+
+
 ```kotlin
 /**
  * Example:
