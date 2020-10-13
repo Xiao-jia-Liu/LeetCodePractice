@@ -45,3 +45,38 @@ class Solution(object):
 
 
 
+```
+/**
+ * Example:
+ * var li = ListNode(5)
+ * var v = li.`val`
+ * Definition for singly-linked list.
+ * class ListNode(var `val`: Int) {
+ *     var next: ListNode? = null
+ * }
+ */
+class Solution {
+    fun deleteDuplicates(head: ListNode?): ListNode? {
+        if (head == null) {
+            return head
+        }
+        
+        var cur = head?.`val`
+        var tem = head
+
+        while (tem?.next != null) {
+            if (cur == tem?.next?.`val`) {
+                tem?.next = tem?.next?.next
+                continue
+            } else {
+                cur = tem?.next?.`val`!!
+            }
+
+            tem = tem?.next
+        }
+
+        return head
+    }
+}
+```
+
