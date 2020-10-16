@@ -51,3 +51,56 @@ class Solution(object):
 ```
 
 
+
+
+
+kotlin版本
+
+```kotlin
+class Solution {
+    fun sortedSquares(A: IntArray): IntArray {
+        if (A.size == 1) {
+            return IntArray(1) {A[0] * A[0]}
+        }
+
+        val res = IntArray(A.size)
+        var right = 1
+        var left = 0
+        var index = 0
+
+        while (right < A.size && A[right] <= 0) {
+            right++
+            left++
+        }
+
+        while (left >= 0 || right < A.size) {
+            if (left == -1) {
+                res[index] = A[right] * A[right]
+                right++
+                index++
+                continue
+            }
+
+            if (right == A.size) {
+                res[index] = A[left] * A[left]
+                left--
+                index++
+                continue
+            }
+
+            if (Math.abs(A[left]) > Math.abs(A[right])) {
+                res[index] = A[right] * A[right]
+                right++
+            } else {
+                res[index] = A[left] * A[left]
+                left--
+            }
+
+            index++
+        }
+
+        return res
+    }
+}
+```
+
