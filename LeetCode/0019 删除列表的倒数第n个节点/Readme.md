@@ -101,3 +101,49 @@ class Solution(object):
 ```
 
 
+
+
+
+快慢指针kotlin版
+
+```kotlin
+/**
+ * Example:
+ * var li = ListNode(5)
+ * var v = li.`val`
+ * Definition for singly-linked list.
+ * class ListNode(var `val`: Int) {
+ *     var next: ListNode? = null
+ * }
+ */
+class Solution {
+    fun removeNthFromEnd(head: ListNode?, n: Int): ListNode? {
+        var after = head
+        var before = head
+        var par = head
+
+        repeat(n) {
+            before = before?.next
+        }
+
+        while (before != null) {
+            if (before?.next == null) {
+                par = after
+            }
+
+            before = before?.next
+            after = after?.next
+
+            
+        }
+
+        if (par == after) {
+            return head?.next
+        }
+
+        par?.next = after?.next
+        return head
+    }
+}
+```
+
