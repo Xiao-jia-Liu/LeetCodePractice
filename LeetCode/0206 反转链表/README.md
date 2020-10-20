@@ -1,3 +1,5 @@
+
+
 ##### 题目描述
 
 反转一个单链表。
@@ -38,4 +40,76 @@ class Solution(object):
         return rHead
 ```
 
+
+
+
+
+
+
+
+
+递归kotlin版本
+
+```kotlin
+/**
+ * Example:
+ * var li = ListNode(5)
+ * var v = li.`val`
+ * Definition for singly-linked list.
+ * class ListNode(var `val`: Int) {
+ *     var next: ListNode? = null
+ * }
+ */
+class Solution {
+    var res: ListNode? = null
+    fun reverseList(head: ListNode?): ListNode? {
+        reverseListInternal(head, head?.next)
+
+        return res
+    }
+
+    fun reverseListInternal(head: ListNode?, next: ListNode?) {
+        if (next == null) {
+            res = head
+            return
+        }
+
+        reverseListInternal(head?.next, next?.next)
+        next?.next = head
+        head?.next = null
+    }
+}
+```
+
+
+
+迭代kotlin版本
+
+```kotlin
+/**
+ * Example:
+ * var li = ListNode(5)
+ * var v = li.`val`
+ * Definition for singly-linked list.
+ * class ListNode(var `val`: Int) {
+ *     var next: ListNode? = null
+ * }
+ */
+class Solution {
+    fun reverseList(head: ListNode?): ListNode? {
+        var cur: ListNode? = head
+        var pre: ListNode? = null
+
+        while (cur != null) {
+            val temNext = cur?.next
+
+            cur?.next = pre
+            pre = cur
+            cur = temNext
+        }
+
+        return pre
+    }
+}
+```
 
