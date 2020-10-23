@@ -86,3 +86,95 @@ class Solution(object):
 ```
 
 
+
+
+
+##### 动态规划
+
+
+
+```kotlin
+class Solution {
+    fun longestValidParentheses(s: String): Int {
+        val dp = IntArray(s.length) {0}
+        var max = 0
+
+        for ((index, c) in s.withIndex()) {
+            if (index == 0) {
+                continue
+            }
+
+            if (c == ')' && s[index - 1] == '(') {
+                dp[index] = 1 + if (index - 2 >= 0) dp[index - 2] else 0
+                max = Math.max(max, dp[index])
+            } else if (c == ')' && s[index - 1] == ')') {
+                if ((index - dp[index - 1] * 2 - 1 >= 0) && s[index - dp[index - 1] * 2 - 1] == '(') {
+                    dp[index] = dp[index - 1] + 1 + if (index - dp[index - 1] * 2 - 2 >= 0) dp[index - dp[index - 1] * 2 - 2] else 0
+                    max = Math.max(max, dp[index])
+                }
+            }
+        }
+
+        for ((index, value) in dp.withIndex()) {
+            println("$index  ->  ${value}")
+        }
+
+        return max * 2
+    }
+}
+```
+
+##### 贪心算法
+
+维护两个数，left和right，left表示左括号数量，right表示右括号数量，先从头到尾遍历字符串，出现左括号则left + 1，否则right + 1，
+
+当right大于left时，当前一定不是一个有效括号对，因为出现了多余的右括号，且在之前，肯定出现了left == right的情况，此时说明，正好是一个有效的括号对，所以，在left == right时，计数一次，right > left，则left和right都重新置为0，但是，如果左括号一直多余右括号嘞？很好办，反过来再来一次就ok了
+
+```kotlin
+
+class Solution {
+    fun longestValidParentheses(s: String): Int {
+        var left = 0
+        var right = 0
+
+        var sum1 = 0
+        var sum2 = 0
+
+        for (c in s) {
+            if (c == '(') {
+                left++
+            } else {
+                right++
+            }
+
+            if (right == left) {
+                sum1 = Math.max(sum1, left * 2)
+            } else if (right > left) {
+                left = 0
+                right = 0
+            }
+        }
+
+        left = 0
+        right = 0
+
+        for (i in s.length - 1 downTo 0) {
+            if (s[i] == '(') {
+                left++
+            } else {
+                right++
+            }
+
+            if (left == right) {
+                sum2 = Math.max(sum2, left * 2)
+            } else if (left > right) {
+                left = 0
+                right = 0
+            }
+        }
+
+        return Math.max(sum1, sum2)
+    }
+}
+```
+

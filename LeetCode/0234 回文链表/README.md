@@ -44,7 +44,105 @@ class Solution(object):
 
 
 
+从链表一半，反转后一半或者前一半，然后比较，不等就是不是
 
+```kotlin
+/**
+ * Example:
+ * var li = ListNode(5)
+ * var v = li.`val`
+ * Definition for singly-linked list.
+ * class ListNode(var `val`: Int) {
+ *     var next: ListNode? = null
+ * }
+ */
+class Solution {
+    fun isPalindrome(head: ListNode?): Boolean {
+        if (head?.next == null) {
+            return true
+        }
+
+        var pre = head?.next
+        var index = 1
+        var half: ListNode? = head
+
+        while (pre != null) {
+            index++
+
+            if (pre?.`val` == head?.`val`) {
+                break
+            }
+
+            pre = pre?.next
+        }
+
+        if (pre == null) {
+            return false
+        }
+
+        if (index % 2 == 1) {
+            val mid = index / 2
+            repeat(mid) {
+                half = half?.next
+            }
+
+            val node = ListNode(half?.`val`!!)
+            val tem = half
+            node?.next = half?.next
+            half = node
+            tem?.next = null
+        } else {
+            val mid = index / 2
+            repeat(mid - 1) {
+                half = half?.next
+            }
+
+            val tem = half
+            half = half?.next
+            tem?.next = null
+        }
+
+        var reverse = reverseList(half)
+        var cur = head
+// print(reverse)
+// println("----------")
+// print(cur)
+        while (cur != null && reverse != null) {
+            if (cur?.`val` != reverse?.`val`) {
+                return false
+            }
+
+            cur = cur?.next
+            reverse = reverse?.next
+        }
+
+        return cur == null && reverse == null
+    }
+
+fun print(head: ListNode?) {
+    var cur = head
+
+    while (cur != null) {
+        println(cur?.`val`)
+        cur = cur?.next
+    }
+}
+
+    fun reverseList(root: ListNode?): ListNode? {
+        var head = root
+        var after:ListNode? = null
+
+        while (head != null) {
+            val tem = head?.next
+            head?.next = after
+            after = head
+            head = tem
+        }
+
+        return after
+    }
+}
+```
 
 
 
