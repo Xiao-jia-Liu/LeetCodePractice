@@ -79,13 +79,10 @@ class Solution(object):
         for i in range(1,n-1):
             if A[i-1] == A[i] and A[i+1] == A[i]:
                 continue
-
             if A[i-1] >= A[i] and A[i] <= A[i+1]:
                 extreme_min.append(i)
-
             if A[i-1] <= A[i] and A[i] >= A[i+1]:
                 extreme_max.append(i)
-
         min_num = len(extreme_min)
         max_num = len(extreme_max)
 
@@ -100,19 +97,13 @@ class Solution(object):
         elif max_num == 0:
             return 0
         else:
+            extreme_min.insert(0,0)
+            extreme_min.append(n-1)
             extreme_diff = []
-            for j in range(min_num-1):
+            for j in range(min_num+1):
                 mountain_list = A[extreme_min[j]:extreme_min[j+1]+1]
                 if self.validMountainArray(mountain_list)==True:
                     extreme_diff.append(extreme_min[j+1]-extreme_min[j])
-
-            mountain_list = A[0:extreme_min[0]+1]
-            if self.validMountainArray(mountain_list)==True: 
-                extreme_diff.append(extreme_min[0])
-            
-            mountain_list = A[extreme_min[-1]:n] 
-            if self.validMountainArray(mountain_list)==True:
-                extreme_diff.append(n-extreme_min[-1]-1)
 
             if len(extreme_diff) == 0:
                 return 0
