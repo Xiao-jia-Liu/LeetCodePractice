@@ -58,4 +58,54 @@ class Solution(object):
 
 ##### O（log(m+n)）解法：
 
-待定
+
+
+
+
+```kotlin
+class Solution {
+    fun findMedianSortedArrays(nums1: IntArray, nums2: IntArray): Double {
+        val totalLen = nums1.size + nums2.size
+        val isObb = (totalLen % 2) != 0
+        val mid = if (isObb) totalLen / 2 else totalLen / 2 - 1
+        var index1 = 0
+        var index2 = 0
+        var currentIndex = 0
+        while (index1 < nums1.size || index2 < nums2.size) {
+            if ((if (index1 < nums1.size) nums1[index1] else Int.MAX_VALUE)
+            <= 
+            (if (index2 < nums2.size) nums2[index2] else Int.MAX_VALUE)) {
+                if (currentIndex == mid) {
+                    var res = nums1[index1].toDouble()
+                    if (!isObb) {
+                        if ((index1 + 1) < nums1.size && nums1[index1 + 1] <= (if (index2 < nums2.size) nums2[index2] else Int.MAX_VALUE)) {
+                            res = (res + nums1[index1 + 1]) / 2
+                        } else {
+                            res = (res + nums2[index2]) / 2
+                        }
+                    }
+                    return res
+                }
+                currentIndex++
+                index1++
+            } else {
+                if (currentIndex == mid) {
+                    var res = nums2[index2].toDouble()
+                    if (!isObb) {
+                        if ((index2 + 1) < nums2.size && (if (index1 < nums1.size) nums1[index1] else Int.MAX_VALUE) >= nums2[index2 + 1]) {
+                            res = (res + nums2[index2 + 1]) / 2
+                        } else {
+                            res = (res + nums1[index1]) / 2
+                        }
+                    }
+                    return res
+                }
+                currentIndex++
+                index2++
+            }
+        }
+        return 0.0
+    }
+}
+```
+
