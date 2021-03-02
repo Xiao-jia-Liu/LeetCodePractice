@@ -62,3 +62,46 @@ s = "mississippi"
 p = "mis*is*p*."
 输出: false
 ```
+
+
+
+
+
+##### 动态规划
+
+![image-20210303000854393](./image-20210303000854393.png)
+
+```kotlin
+class Solution {
+    fun isMatch(s: String, p: String): Boolean {
+        val m = s.length
+        val n = p.length
+        val res = Array<Array<Boolean>>(m + 1) {Array<Boolean> (n + 1) { false }}
+        res[0][0] = true
+        for (i in 0 .. m) {
+            for (j in 1 .. n) {
+                if (p[j - 1] == '*') {
+                    res[i][j] = res[i][j - 2]
+                    if (match(s, p, i, j - 2)) {
+                        res[i][j] = res[i - 1][j] || res[i][j - 2]
+                    }
+                } else {
+                    res[i][j] = if (match(s, p, i, j - 1)) res[i - 1][j - 1] else false
+                }
+            }
+        }
+        return res[m][n]
+    }
+
+    fun match(s: String, p: String, i: Int, j: Int): Boolean {
+        if (i == 0) {
+            return false
+        }
+        if (p[j] == '.') {
+            return true
+        }
+        return s[i - 1] == p[j]
+    }
+}
+```
+
